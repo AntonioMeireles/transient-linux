@@ -1,0 +1,3 @@
+target=$(echo ${SSH_AUTH_SOCK} | sed -e 's,.*tmp/,,' -e 's,/,_,i')
+export XAUTHORITY="/tmp/.${target}.Xauthority"
+

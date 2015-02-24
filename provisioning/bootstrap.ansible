@@ -1,0 +1,24 @@
+---
+  - hosts: all
+    sudo: true
+
+    tasks:
+     - name: disable SELinux
+       selinux: state=disabled
+     - copy: src=motd dest=/etc/motd owner=root group=root mode=0644
+     - copy: src=sshrc dest=/etc/ssh/sshrc owner=root group=root mode=0644
+     - copy: src=xauth dest=/etc/profile.d/xauth.sh owner=root group=root mode=0644
+     - name: add base pkgs
+       yum: name="@Basic Desktop" state=latest
+       changed_when: false
+     - name: add extra pkgs
+       yum: name={{ item }} state=latest
+       with_items:
+        - emacs-nox
+        - virt-manager
+     - name: upgrade all packages
+       yum: name=* state=latest
+     - user: name={{ user }} shell=/bin/bash uid=1001 groups=vagrant append=yes
+       changed_when: false
+     # - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 regexp=^NM_CONTROLLED= line=NM_CONTROLLED="no"
+     # - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 regexp=^NM_CONTROLLED= line=NM_CONTROLLED="no"
